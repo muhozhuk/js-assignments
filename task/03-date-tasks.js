@@ -22,6 +22,8 @@
  *    'Sun, 17 May 1998 03:00:00 GMT+01' => Date()
  */
 function parseDataFromRfc2822(value) {
+   return Date.parse(value);
+
    throw new Error('Not implemented');
 }
 
@@ -37,6 +39,7 @@ function parseDataFromRfc2822(value) {
  *    '2016-01-19T08:07:37Z' => Date()
  */
 function parseDataFromIso8601(value) {
+   return Date.parse(value);
    throw new Error('Not implemented');
 }
 
@@ -56,6 +59,10 @@ function parseDataFromIso8601(value) {
  *    Date(2015,1,1)    => false
  */
 function isLeapYear(date) {
+   if (date.getFullYear() % 4 != 0) { return false; }
+   else if (date.getFullYear() % 100 != 0) { return true; }
+   else if (date.getFullYear() % 400 != 0) { return false; }
+   else return true;
    throw new Error('Not implemented');
 }
 
@@ -76,6 +83,18 @@ function isLeapYear(date) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
 function timeSpanToString(startDate, endDate) {
+   let totalMS = Math.abs(startDate - endDate);
+   let h = Math.floor(totalMS / 3600000);
+   totalMS %= 3600000;
+   let min = Math.floor(totalMS / 60000);
+   totalMS %= 60000;
+   let sec = Math.floor(totalMS / 1000);
+   let ms = totalMS % 1000;
+   if (h.toString().length < 2) h = '0' + h;
+   if (min.toString().length < 2) min = '0' + min;
+   if (sec.toString().length < 2) sec = '0' + sec;
+   if (ms.toString().length < 2) ms = '00' + ms; else if (ms.toString().length < 3) ms = '0' + ms;
+   return `${h}:${min}:${sec}.${ms}`;
    throw new Error('Not implemented');
 }
 
@@ -94,14 +113,15 @@ function timeSpanToString(startDate, endDate) {
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
 function angleBetweenClockHands(date) {
-    throw new Error('Not implemented');
+   //return (Math.abs((360 / 12) * date.getHours() - (360 / 60) * date.getMinutes()));
+   throw new Error('Not implemented');
 }
 
 
 module.exports = {
-    parseDataFromRfc2822: parseDataFromRfc2822,
-    parseDataFromIso8601: parseDataFromIso8601,
-    isLeapYear: isLeapYear,
-    timeSpanToString: timeSpanToString,
-    angleBetweenClockHands: angleBetweenClockHands
+   parseDataFromRfc2822: parseDataFromRfc2822,
+   parseDataFromIso8601: parseDataFromIso8601,
+   isLeapYear: isLeapYear,
+   timeSpanToString: timeSpanToString,
+   angleBetweenClockHands: angleBetweenClockHands
 };
